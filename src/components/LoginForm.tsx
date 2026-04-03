@@ -2,12 +2,14 @@
 
 import { useState } from "react";
 import { signIn } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { useRouter, Link } from "@/i18n/routing";
 import { motion } from "framer-motion";
-import Link from "next/link";
+
+import { useTranslations } from "next-intl";
 
 export default function LoginForm() {
   const router = useRouter();
+  const t = useTranslations("Auth");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -45,8 +47,7 @@ export default function LoginForm() {
       className="w-full max-w-md p-8 bg-white rounded-xl shadow-lg"
     >
       <div className="text-center mb-8">
-        <h1 className="text-2xl font-bold text-gray-900">Welcome Back</h1>
-        <p className="text-gray-500 mt-2">Sign in to manage your e-contracts</p>
+        <h1 className="text-2xl font-bold text-gray-900">{t("loginTitle")}</h1>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">

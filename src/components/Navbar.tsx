@@ -1,14 +1,18 @@
 "use client";
 
-import Link from "next/link";
+import { Link } from "@/i18n/routing";
 import Image from "next/image";
 import { useSession, signOut } from "next-auth/react";
 import { Menu, X } from "lucide-react";
 import { useState } from "react";
+import LanguageSwitcher from "./LanguageSwitcher";
+
+import { useTranslations } from "next-intl";
 
 export default function Navbar() {
   const { status } = useSession();
   const [isOpen, setIsOpen] = useState(false);
+  const t = useTranslations("Navigation");
 
   return (
     <nav className="bg-white shadow-sm border-b">
@@ -24,31 +28,35 @@ export default function Navbar() {
           {/* Desktop Menu */}
           <div className="hidden sm:ml-6 sm:flex sm:items-center sm:space-x-8">
             <Link href="/" className="text-gray-500 hover:text-gray-900 px-3 py-2 text-sm font-medium">
-              Home
+              {t("home")}
+            </Link>
+            <Link href="/templates" className="text-gray-500 hover:text-gray-900 px-3 py-2 text-sm font-medium">
+              {t("templates")}
             </Link>
 
             {status === "authenticated" ? (
               <>
                 <Link href="/profile" className="text-gray-500 hover:text-gray-900 px-3 py-2 text-sm font-medium">
-                  Profile
+                  {t("profile")}
                 </Link>
                 <button
                   onClick={() => signOut({ callbackUrl: "/" })}
                   className="bg-red-50 text-red-600 hover:bg-red-100 px-4 py-2 rounded-md text-sm font-medium transition-colors"
                 >
-                  Log Out
+                  {t("logout")}
                 </button>
               </>
             ) : (
               <>
                 <Link href="/login" className="text-gray-500 hover:text-gray-900 px-3 py-2 text-sm font-medium">
-                  Log In
+                  {t("login")}
                 </Link>
                 <Link href="/register" className="bg-blue-600 text-white hover:bg-blue-700 px-4 py-2 rounded-md text-sm font-medium transition-colors">
-                  Sign Up
+                  {t("signup")}
                 </Link>
               </>
             )}
+            <LanguageSwitcher />
           </div>
 
           {/* Mobile menu button */}
@@ -68,12 +76,22 @@ export default function Navbar() {
       {isOpen && (
         <div className="sm:hidden">
           <div className="pt-2 pb-3 space-y-1">
+            <div className="px-3 py-2">
+              <LanguageSwitcher />
+            </div>
             <Link
               href="/"
               className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50"
               onClick={() => setIsOpen(false)}
             >
-              Home
+              {t("home")}
+            </Link>
+            <Link
+              href="/templates"
+              className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50"
+              onClick={() => setIsOpen(false)}
+            >
+              {t("templates")}
             </Link>
 
             {status === "authenticated" ? (
@@ -83,7 +101,7 @@ export default function Navbar() {
                   className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50"
                   onClick={() => setIsOpen(false)}
                 >
-                  Profile
+                  {t("profile")}
                 </Link>
                 <button
                   onClick={() => {
@@ -92,7 +110,7 @@ export default function Navbar() {
                   }}
                   className="block w-full text-left px-3 py-2 text-base font-medium text-red-600 hover:text-red-800 hover:bg-red-50"
                 >
-                  Log Out
+                  {t("logout")}
                 </button>
               </>
             ) : (
@@ -102,14 +120,14 @@ export default function Navbar() {
                   className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50"
                   onClick={() => setIsOpen(false)}
                 >
-                  Log In
+                  {t("login")}
                 </Link>
                 <Link
                   href="/register"
                   className="block px-3 py-2 text-base font-medium text-blue-600 hover:text-blue-800 hover:bg-blue-50"
                   onClick={() => setIsOpen(false)}
                 >
-                  Sign Up
+                  {t("signup")}
                 </Link>
               </>
             )}

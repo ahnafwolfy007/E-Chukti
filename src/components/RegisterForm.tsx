@@ -1,12 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, Link } from "@/i18n/routing";
 import { motion } from "framer-motion";
-import Link from "next/link";
+
+import { useTranslations } from "next-intl";
 
 export default function RegisterForm() {
   const router = useRouter();
+  const t = useTranslations("Auth");
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -52,8 +54,7 @@ export default function RegisterForm() {
       className="w-full max-w-md p-8 bg-white rounded-xl shadow-lg"
     >
       <div className="text-center mb-8">
-        <h1 className="text-2xl font-bold text-gray-900">Create an Account</h1>
-        <p className="text-gray-500 mt-2">Get started with eChukti today</p>
+        <h1 className="text-2xl font-bold text-gray-900">{t("registerTitle")}</h1>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
