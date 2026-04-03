@@ -3,7 +3,7 @@
 import { useSession } from "next-auth/react";
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { FileText, Download, Clock } from "lucide-react";
+import { FileText, Download, Clock, CreditCard } from "lucide-react";
 import { useLocale } from "next-intl";
 import { templates } from "@/config/templates";
 
@@ -57,6 +57,26 @@ export default function VaultPage() {
     return locale === 'bn' ? t.titleBn : t.titleEn;
   };
 
+  const handlePayment = async (contractId: string) => {
+    try {
+      const res = await fetch("/api/payment/initiate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ contractId })
+      });
+      const data = await res.json();
+
+      if (res.ok && data.url) {
+        window.location.href = data.url;
+      } else {
+        alert("Failed to initiate payment: " + (data.message || 'Unknown error'));
+      }
+    } catch (error) {
+      console.error(error);
+      alert("Error connecting to payment gateway");
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-5xl mx-auto">
@@ -108,18 +128,28 @@ export default function VaultPage() {
                       </div>
                     </div>
                     <div>
-                      {contract.pdfUrl ? (
-                        <a
-                          href={contract.pdfUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors shadow-sm"
-                        >
-                          <Download size={16} />
-                          {locale === 'bn' ? 'ডাউনলোড' : 'Download PDF'}
-                        </a>
+                      {contract.status === 'COMPLETED' ? (
+                        contract.pdfUrl ? (
+                          <a
+                            href={contract.pdfUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors shadow-sm"
+                          >
+                            <Download size={16} />
+                            {locale === 'bn' ? 'ডাউনলোড' : 'Download PDF'}
+                          </a>
+                        ) : (
+                          <span className="text-sm text-gray-400 italic">No PDF available</span>
+                        )
                       ) : (
-                        <span className="text-sm text-gray-400 italic">No PDF generated</span>
+                        <button
+                          onClick={() => handlePayment(contract.id)}
+                          className="flex items-center gap-2 px-4 py-2 bg-blue-600 rounded-lg text-sm font-medium text-white hover:bg-blue-700 transition-colors shadow-sm"
+                        >
+                          <CreditCard size={16} />
+                          {locale === 'bn' ? '৫০০ টাকা পেমেন্ট করুন' : 'Pay 500 BDT'}
+                        </button>
                       )}
                     </div>
                   </div>

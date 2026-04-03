@@ -66,11 +66,17 @@ export async function POST(req: Request) {
         .upload(fileName, buffer, { contentType: 'application/pdf' });
 
       if (!uploadError && uploadData) {
-        const { data: publicUrlData } = supabase.storage
+        // Because the bucket is private (public=false) and we are using NextAuth
+        // instead of Supabase Auth, we must generate a signed URL to allow download.
+        // We set a long expiry for demonstration, but in production this should be
+        // generated dynamically on request.
+        const { data: signedUrlData } = await supabase.storage
           .from('contracts')
-          .getPublicUrl(fileName);
+          .createSignedUrl(fileName, 60 * 60 * 24 * 365); // 1 year
 
-        finalPdfUrl = publicUrlData.publicUrl;
+        if (signedUrlData) {
+           finalPdfUrl = signedUrlData.signedUrl;
+        }
       }
     }
 
