@@ -6,6 +6,7 @@
   "Navigation": {
     "home": "Home",
     "profile": "Profile",
+    "vault": "Vault",
     "templates": "Templates",
     "login": "Log In",
     "signup": "Sign Up",
